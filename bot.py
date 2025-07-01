@@ -2,10 +2,11 @@ from keep_alive import keep_alive
 keep_alive()
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import os
 from dotenv import load_dotenv
 import os
+import asyncio
 
 
 intents = discord.Intents.default()
@@ -17,6 +18,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 # IDs dos cargos principais
 ROLE_ESPADACHIM_ID = 1386796444043968663
 ROLE_DEMONIO_ID = 1386796534930341929
+CHANNEL_ID = 1386799249999532154
 
 # Cargos de ranking - Espadachim
 RANKS_ESPADACHIM = [
@@ -137,4 +139,22 @@ async def log_event(member, role_name, reason):
         await log_channel.send(
             f"📢 **{member.display_name}** teve o cargo `{role_name}` **removido** — {reason}."
         )
+@tasks.loop(minutes=45)
+async def call_members ():
+    channel  = bot.get_channel(CHANNEL_ID)
+    if channel is None:
+        print("Canal não encontrado!")
+        return
+    
+    guild = channel.guild
+    role_espadachim = guild.get_role(ROLE_ESPADACHIM_ID)
+    role_demonio = guild.get_role(ROLE_DEMONIO_ID)
+
+    if role_espadachim and role_demonio:
+        await channel.send(f'{role_espadachim.mention} {role_demonio.mention}')
+    else:
+        print("Um ou ambos os cargos não foram encontrados.")
+
 bot.run(os.environ['TOKEN'])
+
+
