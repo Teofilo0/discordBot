@@ -6,7 +6,6 @@ from discord.ext import commands, tasks
 import os
 from dotenv import load_dotenv
 import os
-import asyncio
 
 
 intents = discord.Intents.default()
@@ -57,6 +56,7 @@ LOG_CHANNEL_ID = 1383989829590585404
 @bot.event
 async def on_ready():
     print(f'✅ Bot conectado como {bot.user.name}')
+    call_members.start()
 
 @bot.event
 async def on_member_update(before, after):
