@@ -17,7 +17,6 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 # IDs dos cargos principais
 ROLE_ESPADACHIM_ID = 1386796444043968663
 ROLE_DEMONIO_ID = 1386796534930341929
-CHANNEL_ID = 1386799249999532154
 
 # Cargos de ranking - Espadachim
 RANKS_ESPADACHIM = [
@@ -56,7 +55,6 @@ LOG_CHANNEL_ID = 1383989829590585404
 @bot.event
 async def on_ready():
     print(f'✅ Bot conectado como {bot.user.name}')
-    call_members.start()
 
 @bot.event
 async def on_member_update(before, after):
@@ -139,22 +137,6 @@ async def log_event(member, role_name, reason):
         await log_channel.send(
             f"📢 **{member.display_name}** teve o cargo `{role_name}` **removido** — {reason}."
         )
-@tasks.loop(minutes=45)
-async def call_members ():
-    channel  = bot.get_channel(CHANNEL_ID)
-    if channel is None:
-        print("Canal não encontrado!")
-        return
-    
-    guild = channel.guild
-    role_espadachim = guild.get_role(ROLE_ESPADACHIM_ID)
-    role_demonio = guild.get_role(ROLE_DEMONIO_ID)
-
-    if role_espadachim and role_demonio:
-        await channel.send(f'{role_espadachim.mention} {role_demonio.mention}')
-    else:
-        print("Um ou ambos os cargos não foram encontrados.")
-
 bot.run(os.environ['TOKEN'])
 
 
